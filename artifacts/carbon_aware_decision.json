@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-11-06T13:20:35.587811+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 224
+    },
+    "green_run": {
+      "carbon_intensity": 224,
+      "deferred_seconds": 0
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T13:20:47.644684+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 224
+    },
+    "green_run": {
+      "carbon_intensity": 224,
+      "deferred_seconds": 0
+    },
+    "savings": {}
+  }
+]

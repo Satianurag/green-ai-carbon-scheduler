@@ -1,0 +1,13 @@
+run_id,phase,task,dataset,hardware,region,timestamp_utc,kWh,kgCO2e,water_L,runtime_s,quality_metric_name,quality_metric_value,notes
+baseline_1762435244,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:20:35.587811+00:00,0.00008939,0.00000856,,3.217910,MAE,0.440584,CodeCarbon
+optimized_1762435253,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:20:47.644684+00:00,0.00000726,0.00000175,,0.261257,MAE,0.448539,CodeCarbon
+baseline_1762435262,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:20:56.476553+00:00,0.00001269,0.00000220,,0.456691,MAE,0.440584,CodeCarbon
+optimized_1762435268,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:03.235779+00:00,0.00000699,0.00000173,,0.251806,MAE,0.448539,CodeCarbon
+baseline_1762435276,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:09.686981+00:00,0.00001128,0.00000001,,0.405951,MAE,0.440584,CodeCarbon
+optimized_1762435283,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:17.469071+00:00,0.00000786,0.00000180,,0.282936,MAE,0.448539,CodeCarbon
+baseline_1762435290,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:24.023503+00:00,0.00001303,0.00000246,,0.468986,MAE,0.440584,CodeCarbon
+optimized_1762435296,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:30.780244+00:00,0.00000760,0.00000177,,0.273762,MAE,0.448539,CodeCarbon
+baseline_1762435304,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:37.232250+00:00,0.00001161,0.00000001,,0.418007,MAE,0.440584,CodeCarbon
+optimized_1762435310,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:44.806896+00:00,0.00000782,0.00000179,,0.281515,MAE,0.448539,CodeCarbon
+baseline_1762435317,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:51.260642+00:00,0.00001102,0.00000206,,0.396780,MAE,0.440584,CodeCarbon
+optimized_1762435323,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T13:21:58.122958+00:00,0.00000707,0.00000173,,0.254571,MAE,0.448539,CodeCarbon
