@@ -50,3 +50,8 @@ submission_*.csv
 # Competition-specific (keep artifacts/ but ignore these in root)
 /emissions.csv
 /submission.csv
+
+# Allow tracked notebooks in notebooks/
+!notebooks/
+!notebooks/*.ipynb
+!notebooks/**/*.ipynb
