@@ -1,3 +1,0 @@
-run_id,phase,task,dataset,hardware,region,timestamp_utc,kWh,kgCO2e,water_L,runtime_s,quality_metric_name,quality_metric_value,notes
-baseline_1762449389,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T17:16:29.643379+00:00,0.00000940,0.00000203,,0.338529,MAE,0.440584,Proxy
-optimized_1762449414,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T17:16:53.754646+00:00,0.00000908,0.00000109,,0.327035,MAE,0.448539,Proxy
