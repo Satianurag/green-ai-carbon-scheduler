@@ -29,6 +29,14 @@ A **production-ready carbon-aware ML scheduler** that:
 3. **Schedules training** to low-carbon windows
 4. **Proves impact** with rigorous before/after evidence
 
+## 🔧 Technical Differentiation
+
+- **Real-time carbon intensity** via UK National Grid API (not just static CSV)
+- **Smart scheduling** with threshold and optional deferral to greener windows
+- **Evidence discipline**: timestamped runs, hardware metadata, decision logs
+- **Experiment workflow**: batch runs with automatic visualization
+- **Reusable library + CLI**: modular `greenai` package, not a single-purpose script
+
 ### 🏆 Proven Results (Real Measurements)
 ```
 Baseline Run:  0.00008939 kWh → 0.00000856 kgCO₂e (3.2s)
@@ -281,8 +289,8 @@ Open-source forever. Use it, fork it, deploy it. Make AI greener. 🌱
 ## 📞 Contact & Links
 
 - **Competition**: [Kaggle Hack4Earth](https://www.kaggle.com/competitions/kaggle-community-olympiad-hack-4-earth-green-ai)
-- **DoraHacks Submission**: [BUIDL Link](#) *(to be added)*
-- **Demo Video**: [YouTube](#) *(to be added)*
+- **DoraHacks Submission**: Coming soon
+- **Demo Video**: Coming soon
 - **Discord**: [Green Software Budapest](https://discord.gg/ErCRzdcC)
 
 ---
