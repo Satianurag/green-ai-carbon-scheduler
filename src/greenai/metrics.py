@@ -64,6 +64,7 @@ def run_once(
     n_jobs: int = -1,
     random_state: int = 42,
     feature_select: bool = False,
+    use_codecarbon: bool = True,
 ) -> Dict:
     assert mode in {"baseline", "optimized"}
     # Determine carbon intensity source
@@ -119,6 +120,7 @@ def run_once(
         ),
         mean_ci_g_per_kwh=float(ci),
         assumed_kw=float(assumed_kw),
+        use_codecarbon=use_codecarbon,
     )
 
     row = dict(

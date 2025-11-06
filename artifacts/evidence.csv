@@ -1,3 +1,9 @@
 run_id,phase,task,dataset,hardware,region,timestamp_utc,kWh,kgCO2e,water_L,runtime_s,quality_metric_name,quality_metric_value,notes
 baseline_1762449389,baseline,regression,synthetic,CPU_x86_64,GB,2025-11-06T17:16:29.643379+00:00,0.00000940,0.00000203,,0.338529,MAE,0.440584,Proxy
 optimized_1762449414,optimized,regression,synthetic,CPU_x86_64,GB,2025-11-06T17:16:53.754646+00:00,0.00000908,0.00000109,,0.327035,MAE,0.448539,Proxy
+baseline_1762451847,baseline,regression,csv,CPU_x86_64,GB,2025-11-06T17:57:21.587183+00:00,0.00000156,0.00000127,,0.056196,MAE,0.027187,CodeCarbon
+optimized_1762452092,optimized,regression,csv,CPU_x86_64,GB,2025-11-06T18:01:26.568493+00:00,0.00000618,0.00000203,,0.222444,MAE,0.263333,CodeCarbon
+baseline_1762452442,baseline,regression,csv,CPU_x86_64,GB,2025-11-06T18:07:22.294177+00:00,0.00000242,0.00000052,,0.087225,MAE,0.027187,Proxy
+optimized_1762452499,optimized,regression,csv,CPU_x86_64,GB,2025-11-06T18:08:19.806975+00:00,0.00000200,0.00000024,,0.072081,MAE,0.523497,Proxy
+optimized_1762452562,optimized,regression,csv,CPU_x86_64,GB,2025-11-06T18:09:22.866287+00:00,0.00000179,0.00000021,,0.064318,MAE,0.523497,Proxy
+optimized_1762452834,optimized,regression,csv,CPU_x86_64,GB,2025-11-06T18:13:54.067949+00:00,0.00000190,0.00000023,,0.068249,MAE,0.027187,Proxy

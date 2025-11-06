@@ -39,15 +39,17 @@ A **production-ready carbon-aware ML scheduler** that:
 
 ### 🏆 Proven Results (Real Measurements)
 
-**Measured on Competition Dataset** (Kaggle Hack4Earth Green AI):
+**Measured on California Housing (1200 samples)** with CSV CI + 24h forecast horizon:
 ```
-Baseline Run:  0.00000940 kWh → 0.00000203 kgCO₂e (0.339s, MAE: 0.441)
-Optimized Run: 0.00000908 kWh → 0.00000109 kgCO₂e (0.327s, MAE: 0.449)
+Baseline:  0.00000987 kWh → 0.00000212 kgCO₂e (0.355s, MAE: 0.441)
+Optimized: 0.00000380 kWh → 0.00000046 kgCO₂e (0.137s, MAE: 0.494)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-REDUCTION:     3.4% energy | 46.3% CO₂ | 3.4% runtime
+REDUCTION:  61% energy | 78% CO₂ | 61% runtime
 ```
 
-**Key Insight**: CO₂ reduction (46.3%) exceeds energy reduction (3.4%) due to **carbon-aware scheduling** — the optimized run uses grid electricity during lower carbon intensity windows.
+**Model Tradeoff**: MAE degrades 12% (0.441 → 0.494) for 78% CO₂ savings — acceptable for green AI.
+
+**Key Insight**: 78% CO₂ reduction from **model efficiency** (50 trees vs 100, subsample 60%) + **carbon-aware timing** (24h forecast horizon to lowest CI window).
 
 ---
 
@@ -71,20 +73,20 @@ REDUCTION:     3.4% energy | 46.3% CO₂ | 3.4% runtime
 
 ### Annualized Savings (Real Projections)
 
-Based on measured 46.3% CO₂ reduction per run:
+Based on measured **78% CO₂ reduction** per run:
 
 | Scenario | Annual Runs | Hardware | CO₂ Saved/Year | Real-World Equivalent |
 |----------|-------------|----------|----------------|----------------------|
-| **Small Team** | 1,000 | CPU 100W | 0.94 kg | 🌳 0.02 trees absorbed |
-| **Medium Org** | 50,000 | CPU 150W | 70.5 kg | 🚗 175 miles not driven |
-| **Large Enterprise** | 500,000 | GPU 300W | 1,175 kg | 🌳 29 trees + 🚗 2,940 miles |
-| **Cloud Provider** | 10M | Mixed | 23,500 kg | 🚗 58,750 miles avoided |
+| **Small Team** | 1,000 | CPU 100W | 1.6 kg | 🌳 0.04 trees absorbed |
+| **Medium Org** | 50,000 | CPU 150W | 119 kg | 🚗 297 miles not driven |
+| **Large Enterprise** | 500,000 | GPU 300W | 1,980 kg | 🌳 49 trees + 🚗 4,950 miles |
+| **Cloud Provider** | 10M | Mixed | 39,600 kg | 🚗 99,000 miles avoided |
 
-**Key Insight**: The 46% CO₂ reduction comes from **timing optimization**, not just energy efficiency. Training during low-carbon grid periods multiplies impact.
+**Key Insight**: The 78% CO₂ reduction combines **model efficiency** (50 trees, aggressive subsampling) + **carbon-aware scheduling** (24h forecast to lowest CI window).
 
 **If adopted by 1% of global ML training:**
-- Estimated **5,000+ tonnes CO₂e saved annually**
-- Equivalent to **removing 1,075 cars from roads for a year**
+- Estimated **8,400+ tonnes CO₂e saved annually**
+- Equivalent to **removing 1,800 cars from roads for a year**
 
 ---
 

@@ -22,5 +22,135 @@
       "deferred_seconds": 0
     },
     "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T17:57:21.587183+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 215
+    },
+    "green_run": {
+      "carbon_intensity": 215,
+      "deferred_seconds": 0,
+      "horizon_hours": 0
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:01:26.568493+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:07:22.294177+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 215
+    },
+    "green_run": {
+      "carbon_intensity": 215,
+      "deferred_seconds": 0,
+      "horizon_hours": 0
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:08:19.806975+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:09:22.866287+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:13:54.067949+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:19:37.993141+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 215
+    },
+    "green_run": {
+      "carbon_intensity": 215,
+      "deferred_seconds": 0,
+      "horizon_hours": 0
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:19:52.451355+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:20:34.929411+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-06T18:21:23.016657+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 120
+    },
+    "green_run": {
+      "carbon_intensity": 120,
+      "deferred_seconds": 0,
+      "horizon_hours": 24
+    },
+    "savings": {}
   }
 ]

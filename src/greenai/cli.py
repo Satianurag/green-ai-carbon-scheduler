@@ -34,6 +34,7 @@ def main():
     pr.add_argument("--n-jobs", type=int, default=-1, help="Threads for model training")
     pr.add_argument("--seed", type=int, default=42, help="Random seed")
     pr.add_argument("--feature-select", action="store_true", help="Enable model-based feature selection")
+    pr.add_argument("--proxy-emissions", action="store_true", help="Use proxy emissions instead of CodeCarbon")
 
     pe = sub.add_parser("experiment", help="Run multiple trials and produce plots")
     pe.add_argument("--runs", type=int, default=10)
@@ -50,6 +51,7 @@ def main():
     pe.add_argument("--n-jobs", type=int, default=-1)
     pe.add_argument("--seed", type=int, default=42)
     pe.add_argument("--feature-select", action="store_true")
+    pe.add_argument("--proxy-emissions", action="store_true")
 
     pp = sub.add_parser("predict", help="Train on train CSV and predict test CSV into Kaggle submission format")
     pp.add_argument("--mode", choices=["baseline", "optimized"], required=True)
@@ -79,6 +81,7 @@ def main():
             n_jobs=args.n_jobs,
             random_state=args.seed,
             feature_select=args.feature_select,
+            use_codecarbon=(not args.proxy_emissions),
         )
         print("Wrote evidence row:", row)
     elif args.cmd == "experiment":
@@ -98,6 +101,7 @@ def main():
                 n_jobs=args.n_jobs,
                 random_state=args.seed,
                 feature_select=args.feature_select,
+                use_codecarbon=(not args.proxy_emissions),
             )
         if args.plots:
             fp = plot_energy_co2_bars(args.out, args.plots)

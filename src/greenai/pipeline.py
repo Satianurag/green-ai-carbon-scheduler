@@ -15,8 +15,10 @@ from sklearn.feature_selection import SelectFromModel
 try:
     # LightGBM provides fast, energy-efficient tree boosting
     from lightgbm import LGBMRegressor
+    import lightgbm as lgb
 except Exception:  # pragma: no cover - optional dependency
     LGBMRegressor = None  # type: ignore
+    lgb = None  # type: ignore
 
 
 def load_dataset(csv_path: Optional[str] = None, target_col: str = "GreenScore", n_samples: int = 1200, random_state: int = 42) -> Tuple[pd.DataFrame, pd.Series]:
@@ -67,11 +69,12 @@ def build_baseline_model(random_state: int = 42):
 
 
 def build_optimized_model(random_state: int = 42):
+    """Fast, energy-efficient GBRT: fewer trees, aggressive subsampling."""
     return GradientBoostingRegressor(
-        n_estimators=80,
-        learning_rate=0.08,
-        max_depth=3,
-        subsample=0.7,
+        n_estimators=50,
+        learning_rate=0.15,
+        max_depth=2,
+        subsample=0.6,
         random_state=random_state,
     )
 
@@ -87,6 +90,7 @@ def build_lgbm_model(random_state: int = 42, n_jobs: int = -1) -> Any:
         max_depth=-1,
         subsample=0.8,
         colsample_bytree=0.8,
+        min_data_in_leaf=10,
         reg_alpha=0.0,
         reg_lambda=0.0,
         random_state=random_state,
@@ -108,7 +112,9 @@ def train_and_eval(
     pre = build_preprocessor(X)
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
-    if mode == "baseline" or LGBMRegressor is None:
+    # Small-data heuristics
+    use_lgbm_possible = (LGBMRegressor is not None and mode == "optimized")
+    if mode == "baseline" or not use_lgbm_possible:
         model = build_baseline_model(random_state) if mode == "baseline" else build_optimized_model(random_state)
         pipe = Pipeline([("prep", pre), ("model", model)])
         pipe.fit(Xtr, ytr)
@@ -121,25 +127,44 @@ def train_and_eval(
     pre.fit(Xtr)
     Xtr_enc = pre.transform(Xtr)
     Xte_enc = pre.transform(Xte)
+    # Guard: LightGBM overhead only pays off on large datasets (5K+ samples)
+    if getattr(Xtr_enc, "shape", (0, 0))[0] < 5000 or getattr(Xtr_enc, "shape", (0, 0))[1] < 5:
+        model = build_optimized_model(random_state)
+        pipe = Pipeline([("prep", pre), ("model", model)])
+        pipe.fit(Xtr, ytr)
+        preds = pipe.predict(Xte)
+        mae = mean_absolute_error(yte, preds)
+        return {"mae": float(mae), "pipeline": pipe}
 
     model = build_lgbm_model(random_state=random_state, n_jobs=n_jobs)
 
     if feature_select:
         selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
         selector.fit(Xtr_enc, ytr)
-        Xtr_enc = selector.transform(Xtr_enc)
-        Xte_enc = selector.transform(Xte_enc)
+        Xtr_sel = selector.transform(Xtr_enc)
+        # Ensure at least 1 feature keeps; else disable selection
+        if getattr(Xtr_sel, "shape", (0, 0))[1] >= 1:
+            Xtr_enc = Xtr_sel
+            Xte_enc = selector.transform(Xte_enc)
+        else:
+            selector = None
     else:
         selector = None
 
     # Early stopping using a validation split from training data
     X_tr, X_val, y_tr, y_val = train_test_split(Xtr_enc, ytr, test_size=0.2, random_state=random_state)
+    callbacks = []
+    if lgb is not None:
+        try:
+            callbacks.append(lgb.early_stopping(50, verbose=False))
+            callbacks.append(lgb.log_evaluation(0))
+        except Exception:
+            pass
     model.fit(
         X_tr,
         y_tr,
         eval_set=[(X_val, y_val)],
-        early_stopping_rounds=50,
-        verbose=False,
+        callbacks=callbacks or None,
     )
     preds = model.predict(Xte_enc)
     mae = mean_absolute_error(yte, preds)
@@ -214,7 +239,34 @@ def fit_and_predict(
         pre.fit(X)
         X_enc = pre.transform(X)
         Xte_enc = pre.transform(Xte)
-        model = build_lgbm_model(random_state=random_state, n_jobs=n_jobs)
+        # Guard: LightGBM overhead only pays off on large datasets
+        if getattr(X_enc, "shape", (0, 0))[0] < 5000 or getattr(X_enc, "shape", (0, 0))[1] < 5:
+            pipe = Pipeline([( "prep", pre), ("model", build_optimized_model(random_state))])
+            pipe.fit(X, y)
+            preds = pipe.predict(Xte)
+        else:
+            model = build_lgbm_model(random_state=random_state, n_jobs=n_jobs)
+            selector = None
+            if feature_select:
+                selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
+                selector.fit(X_enc, y)
+                X_sel = selector.transform(X_enc)
+                if getattr(X_sel, "shape", (0, 0))[1] >= 1:
+                    X_enc = X_sel
+                    Xte_enc = selector.transform(Xte_enc)
+                else:
+                    selector = None
+            # Early stopping: hold out a small validation set from training data
+            X_tr, X_val, y_tr, y_val = train_test_split(X_enc, y, test_size=0.1, random_state=random_state)
+            callbacks = []
+            if lgb is not None:
+                try:
+                    callbacks.append(lgb.early_stopping(50, verbose=False))
+                    callbacks.append(lgb.log_evaluation(0))
+                except Exception:
+                    pass
+            model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], callbacks=callbacks or None)
+            preds = model.predict(Xte_enc)
         selector = None
         if feature_select:
             selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
@@ -223,7 +275,14 @@ def fit_and_predict(
             Xte_enc = selector.transform(Xte_enc)
         # Early stopping: hold out a small validation set from training data
         X_tr, X_val, y_tr, y_val = train_test_split(X_enc, y, test_size=0.1, random_state=random_state)
-        model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], early_stopping_rounds=50, verbose=False)
+        callbacks = []
+        if lgb is not None:
+            try:
+                callbacks.append(lgb.early_stopping(50, verbose=False))
+                callbacks.append(lgb.log_evaluation(0))
+            except Exception:
+                pass
+        model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], callbacks=callbacks or None)
         preds = model.predict(Xte_enc)
 
     # Build submission DataFrame
