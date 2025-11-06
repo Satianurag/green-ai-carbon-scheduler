@@ -35,7 +35,7 @@ def test_pipeline_modes():
         m1 = build_baseline_model(random_state=42)
         m2 = build_optimized_model(random_state=42)
         assert m1.n_estimators == 100
-        assert m2.n_estimators == 80
+        assert m2.n_estimators == 50  # Updated: optimized uses 50 trees
         print("✅ Pipeline models configured correctly")
         return True
     except Exception as e:
