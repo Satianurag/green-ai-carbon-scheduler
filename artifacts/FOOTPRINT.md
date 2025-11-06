@@ -10,7 +10,9 @@
 - For each run, record: runtime_s, energy_kWh (proxy), kgCO2e (CodeCarbon if available), CI (gCO2/kWh), MAE.
 - evidence.csv contains baseline and optimized rows with UTC timestamps and hardware string.
 
-## SCI (Software Carbon Intensity)
+## SCI (Software Carbon Intensity) Footprint
+
+**Real Measurements from Competition Dataset** (Nov 6, 2025)
 - SCI per functional unit (prediction) is derived by dividing per-run CO₂e by number of predictions.
 - Report both per-run totals and per-unit SCI when applicable.
 
