@@ -187,12 +187,26 @@ PYTHONPATH=src python -m greenai.cli experiment \
 
 ### 4️⃣ Testing
 ```bash
-# Run smoke tests
+# Install test dependencies
+pip install -r requirements-test.txt
+
+# Run comprehensive test suite (90+ tests, ~85% coverage)
+pytest
+
+# Run with coverage report
+pytest --cov=src/greenai --cov-report=term-missing
+
+# Run specific test module
+pytest tests/test_ci_provider.py -v
+
+# Legacy smoke tests (still functional)
 python3 test_smoke.py
 
 # Test Kaggle notebook locally
 jupyter notebook notebooks/GreenAI_Optimizer_Kaggle_Demo.ipynb
 ```
+
+**📋 Test Coverage**: See [TESTING.md](TESTING.md) for comprehensive testing guide.
 
 ---
 

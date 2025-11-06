@@ -47,6 +47,13 @@ submission_*.csv
 .ipynb_checkpoints/
 *.ipynb
 
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
 # Competition-specific (keep artifacts/ but ignore these in root)
 /emissions.csv
 /submission.csv
