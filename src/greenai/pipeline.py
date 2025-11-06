@@ -10,6 +10,13 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.feature_selection import SelectFromModel
+
+try:
+    # LightGBM provides fast, energy-efficient tree boosting
+    from lightgbm import LGBMRegressor
+except Exception:  # pragma: no cover - optional dependency
+    LGBMRegressor = None  # type: ignore
 
 
 def load_dataset(csv_path: Optional[str] = None, target_col: str = "GreenScore", n_samples: int = 1200, random_state: int = 42) -> Tuple[pd.DataFrame, pd.Series]:
@@ -45,7 +52,8 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     if num_cols:
         transformers.append(("num", StandardScaler(), num_cols))
     if cat_cols:
-        transformers.append(("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols))
+        # Dense output keeps downstream models simple and LightGBM-compatible
+        transformers.append(("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), cat_cols))
     return ColumnTransformer(transformers)
 
 
@@ -68,17 +76,81 @@ def build_optimized_model(random_state: int = 42):
     )
 
 
-def train_and_eval(mode: str, csv_path: Optional[str] = None, target_col: str = "GreenScore", test_size: float = 0.2, random_state: int = 42) -> Dict[str, Any]:
+def build_lgbm_model(random_state: int = 42, n_jobs: int = -1) -> Any:
+    """Return a tuned LightGBM regressor if available, else fallback to GBRT."""
+    if LGBMRegressor is None:
+        return build_optimized_model(random_state)
+    return LGBMRegressor(
+        n_estimators=500,
+        learning_rate=0.05,
+        num_leaves=31,
+        max_depth=-1,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        reg_alpha=0.0,
+        reg_lambda=0.0,
+        random_state=random_state,
+        n_jobs=n_jobs,
+    )
+
+
+def train_and_eval(
+    mode: str,
+    csv_path: Optional[str] = None,
+    target_col: str = "GreenScore",
+    test_size: float = 0.2,
+    random_state: int = 42,
+    n_jobs: int = -1,
+    feature_select: bool = False,
+) -> Dict[str, Any]:
     assert mode in {"baseline", "optimized"}
     X, y = load_dataset(csv_path=csv_path, target_col=target_col, random_state=random_state)
     pre = build_preprocessor(X)
-    model = build_baseline_model(random_state) if mode == "baseline" else build_optimized_model(random_state)
-    pipe = Pipeline([("prep", pre), ("model", model)])
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    pipe.fit(Xtr, ytr)
-    preds = pipe.predict(Xte)
+
+    if mode == "baseline" or LGBMRegressor is None:
+        model = build_baseline_model(random_state) if mode == "baseline" else build_optimized_model(random_state)
+        pipe = Pipeline([("prep", pre), ("model", model)])
+        pipe.fit(Xtr, ytr)
+        preds = pipe.predict(Xte)
+        mae = mean_absolute_error(yte, preds)
+        return {"mae": float(mae), "pipeline": pipe}
+
+    # Optimized path with LightGBM + early stopping + optional feature selection
+    # Fit preprocessor and transform to dense arrays
+    pre.fit(Xtr)
+    Xtr_enc = pre.transform(Xtr)
+    Xte_enc = pre.transform(Xte)
+
+    model = build_lgbm_model(random_state=random_state, n_jobs=n_jobs)
+
+    if feature_select:
+        selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
+        selector.fit(Xtr_enc, ytr)
+        Xtr_enc = selector.transform(Xtr_enc)
+        Xte_enc = selector.transform(Xte_enc)
+    else:
+        selector = None
+
+    # Early stopping using a validation split from training data
+    X_tr, X_val, y_tr, y_val = train_test_split(Xtr_enc, ytr, test_size=0.2, random_state=random_state)
+    model.fit(
+        X_tr,
+        y_tr,
+        eval_set=[(X_val, y_val)],
+        early_stopping_rounds=50,
+        verbose=False,
+    )
+    preds = model.predict(Xte_enc)
     mae = mean_absolute_error(yte, preds)
-    return {"mae": float(mae), "pipeline": pipe}
+    # Return a callable predictor via a tiny wrapper
+    def _predict_fn(Xnew: pd.DataFrame) -> np.ndarray:
+        Xnew_enc = pre.transform(Xnew)
+        if selector is not None:
+            Xnew_enc = selector.transform(Xnew_enc)
+        return model.predict(Xnew_enc)
+
+    return {"mae": float(mae), "pipeline": (pre, selector, model, _predict_fn)}
 
 
 def fit_and_predict(
@@ -88,6 +160,8 @@ def fit_and_predict(
     test_csv: str,
     target_col: str = "GreenScore",
     random_state: int = 42,
+    n_jobs: int = -1,
+    feature_select: bool = False,
 ):
     """
     Train on train_csv and predict on test_csv, returning a DataFrame with columns
@@ -130,13 +204,27 @@ def fit_and_predict(
     X = X_full[common_cols]
     Xte = Xte_full[common_cols]
 
-    # Build and fit pipeline on aligned columns
+    # Build and fit model on aligned columns
     pre = build_preprocessor(X)
-    model = build_baseline_model(random_state) if mode == "baseline" else build_optimized_model(random_state)
-    pipe = Pipeline([("prep", pre), ("model", model)])
-    pipe.fit(X, y)
-
-    preds = pipe.predict(Xte)
+    if mode == "baseline" or LGBMRegressor is None:
+        pipe = Pipeline([("prep", pre), ("model", build_baseline_model(random_state) if mode == "baseline" else build_optimized_model(random_state))])
+        pipe.fit(X, y)
+        preds = pipe.predict(Xte)
+    else:
+        pre.fit(X)
+        X_enc = pre.transform(X)
+        Xte_enc = pre.transform(Xte)
+        model = build_lgbm_model(random_state=random_state, n_jobs=n_jobs)
+        selector = None
+        if feature_select:
+            selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
+            selector.fit(X_enc, y)
+            X_enc = selector.transform(X_enc)
+            Xte_enc = selector.transform(Xte_enc)
+        # Early stopping: hold out a small validation set from training data
+        X_tr, X_val, y_tr, y_val = train_test_split(X_enc, y, test_size=0.1, random_state=random_state)
+        model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], early_stopping_rounds=50, verbose=False)
+        preds = model.predict(Xte_enc)
 
     # Build submission DataFrame
     if id_col:

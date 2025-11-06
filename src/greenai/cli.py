@@ -29,6 +29,11 @@ def main():
     pr.add_argument("--data-csv", type=str, default=None, help="Optional dataset CSV with target 'GreenScore'")
     pr.add_argument("--out", type=str, required=True, help="Path to artifacts/evidence.csv")
     pr.add_argument("--log-decision", type=str, default=None, help="Path to artifacts/carbon_aware_decision.json")
+    pr.add_argument("--horizon-hours", type=int, default=0, help="Forecast horizon (hours) for best CI selection when --ci csv")
+    pr.add_argument("--max-wait-seconds", type=_positive_int, default=0, help="Max wait for green window (live mode)")
+    pr.add_argument("--n-jobs", type=int, default=-1, help="Threads for model training")
+    pr.add_argument("--seed", type=int, default=42, help="Random seed")
+    pr.add_argument("--feature-select", action="store_true", help="Enable model-based feature selection")
 
     pe = sub.add_parser("experiment", help="Run multiple trials and produce plots")
     pe.add_argument("--runs", type=int, default=10)
@@ -40,6 +45,11 @@ def main():
     pe.add_argument("--data-csv", type=str, default=None)
     pe.add_argument("--out", type=str, required=True)
     pe.add_argument("--plots", type=str, default=None)
+    pe.add_argument("--horizon-hours", type=int, default=0)
+    pe.add_argument("--max-wait-seconds", type=_positive_int, default=0)
+    pe.add_argument("--n-jobs", type=int, default=-1)
+    pe.add_argument("--seed", type=int, default=42)
+    pe.add_argument("--feature-select", action="store_true")
 
     pp = sub.add_parser("predict", help="Train on train CSV and predict test CSV into Kaggle submission format")
     pp.add_argument("--mode", choices=["baseline", "optimized"], required=True)
@@ -47,6 +57,9 @@ def main():
     pp.add_argument("--test-csv", type=str, required=True)
     pp.add_argument("--target-col", type=str, default="GreenScore")
     pp.add_argument("--out", type=str, required=True, help="Path to write submission CSV (Id,GreenScore)")
+    pp.add_argument("--n-jobs", type=int, default=-1)
+    pp.add_argument("--seed", type=int, default=42)
+    pp.add_argument("--feature-select", action="store_true")
 
     args = p.parse_args()
 
@@ -61,6 +74,11 @@ def main():
             ci_mode=args.ci,
             ci_csv_path=args.ci_csv,
             log_decision_path=args.log_decision,
+            horizon_hours=args.horizon_hours,
+            max_wait_seconds=args.max_wait_seconds,
+            n_jobs=args.n_jobs,
+            random_state=args.seed,
+            feature_select=args.feature_select,
         )
         print("Wrote evidence row:", row)
     elif args.cmd == "experiment":
@@ -75,6 +93,11 @@ def main():
                 assumed_kw=args.assumed_kw,
                 ci_mode=args.ci,
                 ci_csv_path=args.ci_csv,
+                horizon_hours=args.horizon_hours,
+                max_wait_seconds=args.max_wait_seconds,
+                n_jobs=args.n_jobs,
+                random_state=args.seed,
+                feature_select=args.feature_select,
             )
         if args.plots:
             fp = plot_energy_co2_bars(args.out, args.plots)
@@ -85,6 +108,9 @@ def main():
             train_csv=args.train_csv,
             test_csv=args.test_csv,
             target_col=args.target_col,
+            n_jobs=args.n_jobs,
+            feature_select=args.feature_select,
+            random_state=args.seed,
         )
         df_sub.to_csv(args.out, index=False)
         print("Wrote submission:", args.out, "rows:", len(df_sub))
