@@ -49,13 +49,13 @@ bash run.sh  # One command, full replication
 
 ## Measurement Variance & Limitations
 
-**Observed CO₂ Reduction Range**: 14% to 90% across multiple runs
+**Observed CO₂ Reduction Range**: up to ~46% across multiple runs (see artifacts/evidence.csv)
 
 **Root Cause**: Ultra-short runtimes (0.05-0.6s) approach the noise floor of power measurement sensors. CodeCarbon is optimized for longer training jobs (minutes to hours), not micro-benchmarks.
 
 **Implications**:
 - Individual measurements show high variance due to sensor precision limits
-- Best measured run: 89-90% CO₂ reduction (Nov 7, 2025)
+- Best measured run in evidence.csv: ~46% CO₂ reduction (Nov 7, 2025)
 - Average across runs: ~24% CO₂ reduction (CodeCarbon)
 - **Production use case** (longer training jobs) would show more stable measurements
 

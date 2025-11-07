@@ -18,7 +18,7 @@
 **What if your ML pipeline could:**
 - ⏰ **Wait for clean energy** — Train when renewables are abundant
 - 📊 **Measure real impact** — Track actual hardware consumption, not estimates
-- 🌍 **Cut emissions by 24-82%** — Proven with real measurements
+- 🌍 **Observed** CO₂e reductions up to ~46% and energy/runtime reductions up to ~82% (20 runs; see artifacts/evidence.csv)
 - 🔄 **Integrate seamlessly** — One-line API, no code changes
 
 ---
@@ -28,12 +28,8 @@
 **A carbon-aware ML scheduler that makes AI training responsible** — no PhD in sustainability required.
 
 ```python
-# Before: Train immediately, wherever
-model.fit(X, y)
-
-# After: Train when the grid is green
 from greenai import carbon_aware_train
-carbon_aware_train(model, X, y)  # Waits for low-carbon window
+carbon_aware_train(model, X, y)
 ```
 
 **How it works:**
@@ -56,7 +52,7 @@ carbon_aware_train(model, X, y)  # Waits for low-carbon window
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  CARBON REDUCTION: 24-82% (20 documented runs)             │
+│  OBSERVED (20 runs): up to ~46% CO₂e; up to ~82% energy/runtime │
 │                                                             │
 │  Best Case:  82% energy ↓ | 46% CO₂ ↓ | 82% runtime ↓     │
 │  Average:    ~24% CO₂ reduction (conservative)             │
@@ -208,7 +204,7 @@ PYTHONPATH=src python3 -m greenai.cli predict --mode optimized \
 ### Verify Quality (Optional)
 ```bash
 pip install -r requirements-test.txt
-pytest  # 81 tests, 98% pass rate
+pytest
 ```
 
 **📋 Full documentation**: See [TESTING.md](TESTING.md) for testing guide.

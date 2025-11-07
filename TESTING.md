@@ -356,21 +356,5 @@ pip install --upgrade pytest-cov coverage
 
 ---
 
-## 🏆 Test Quality Metrics
-
-**Before Upgrade**:
-- Test files: 1
-- Test cases: 4
-- Coverage: ~10%
-- Mocking: None
-
-**After Upgrade**:
-- Test files: 7
-- Test cases: 90+
-- Coverage: ~85%
-- Mocking: Comprehensive
-- CI-Ready: ✅
-
----
 
 **Made with 💚 for reliable, carbon-aware AI**
