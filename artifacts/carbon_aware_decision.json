@@ -152,5 +152,31 @@
       "horizon_hours": 24
     },
     "savings": {}
+  },
+  {
+    "timestamp": "2025-11-07T06:50:44.078329+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 203
+    },
+    "green_run": {
+      "carbon_intensity": 203,
+      "deferred_seconds": 0,
+      "horizon_hours": 0
+    },
+    "savings": {}
+  },
+  {
+    "timestamp": "2025-11-07T06:50:52.683961+00:00",
+    "region": "GB",
+    "naive_run": {
+      "carbon_intensity": 203
+    },
+    "green_run": {
+      "carbon_intensity": 203,
+      "deferred_seconds": 0,
+      "horizon_hours": 0
+    },
+    "savings": {}
   }
 ]

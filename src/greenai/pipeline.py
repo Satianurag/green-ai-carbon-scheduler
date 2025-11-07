@@ -267,23 +267,6 @@ def fit_and_predict(
                     pass
             model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], callbacks=callbacks or None)
             preds = model.predict(Xte_enc)
-        selector = None
-        if feature_select:
-            selector = SelectFromModel(estimator=build_lgbm_model(random_state=random_state, n_jobs=n_jobs), threshold="median")
-            selector.fit(X_enc, y)
-            X_enc = selector.transform(X_enc)
-            Xte_enc = selector.transform(Xte_enc)
-        # Early stopping: hold out a small validation set from training data
-        X_tr, X_val, y_tr, y_val = train_test_split(X_enc, y, test_size=0.1, random_state=random_state)
-        callbacks = []
-        if lgb is not None:
-            try:
-                callbacks.append(lgb.early_stopping(50, verbose=False))
-                callbacks.append(lgb.log_evaluation(0))
-            except Exception:
-                pass
-        model.fit(X_tr, y_tr, eval_set=[(X_val, y_val)], callbacks=callbacks or None)
-        preds = model.predict(Xte_enc)
 
     # Build submission DataFrame
     if id_col:
