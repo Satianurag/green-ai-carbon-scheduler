@@ -273,16 +273,6 @@ Where:
 - [x] **Data Efficiency**: Aggressive subsampling for speed
 - [x] **Measurement**: SCI-compliant evidence with CodeCarbon + proxy
 
-### Judging Criteria Self-Assessment
-| Criterion | Weight | Score | Evidence |
-|-----------|--------|-------|----------|
-| **Technical Quality** | 25% | 23/25 | Modular architecture, 81 tests (98% pass), deployment examples |
-| **Footprint Discipline (SCI)** | 25% | 22/25 | 24-46% CO₂ reduction, honest variance reporting, 20 documented runs |
-| **Impact Potential** | 25% | 21/25 | Live API integration, production-ready architecture, scalable |
-| **Openness & Storytelling** | 15% | 14/15 | Honest about measurement challenges, clear methodology |
-| **Data Fitness & Ethics** | 10% | 10/10 | Complete data card, transparent limitations |
-| **TOTAL** | | **90/100** | 🏆 Prize-Competitive |
-
 ---
 
 ## 🚀 Deployment Examples (Templates)
