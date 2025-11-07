@@ -265,15 +265,6 @@ Where:
 
 ---
 
-## 🎯 Alignment with Competition Goals
-
-### Track A: Build Green AI ✅
-- [x] **Model Efficiency**: Model complexity reduced (100→50 estimators, 60% subsampling)
-- [x] **Carbon-Aware Scheduling**: Live CI API + 24h forecast horizon
-- [x] **Data Efficiency**: Aggressive subsampling for speed
-- [x] **Measurement**: SCI-compliant evidence with CodeCarbon + proxy
-
----
 
 ## 🚀 Deployment Examples (Templates)
 
@@ -347,21 +338,6 @@ def lambda_handler(event, context):
 
 ---
 
-## 🚀 Next Steps & Extensions
-
-### Immediate (Post-Hackathon)
-- [ ] Multi-region support (ElectricityMaps, WattTime)
-- [ ] GPU measurement (CUDA + nvidia-smi)
-- [ ] Real-time dashboard (Grafana + Prometheus)
-- [ ] Slack/email alerts for carbon budget thresholds
-
-### Long-Term (Production)
-- [ ] Pre-trained model carbon footprint API
-- [ ] Multi-cloud region routing (AWS/GCP/Azure)
-- [ ] Water usage tracking (datacenter PUE)
-- [ ] Integration with MLflow/Weights & Biases
-
----
 
 ## 🤝 Contributing
 
